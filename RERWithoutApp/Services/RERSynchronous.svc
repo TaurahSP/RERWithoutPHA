@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="RERWithoutApp.RERSynchronous" CodeBehind="RERSynchronous.svc.cs" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="RERWithoutPHA.RERSynchronous" CodeBehind="RERSynchronous.svc.cs" %>

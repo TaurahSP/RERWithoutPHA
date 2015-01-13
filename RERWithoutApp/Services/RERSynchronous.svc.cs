@@ -5,7 +5,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.EventReceivers;
-namespace RERWithoutApp
+namespace RERWithoutPHA
 {
     public class RERSynchronous : IRemoteEventService
     {
@@ -13,15 +13,22 @@ namespace RERWithoutApp
         public SPRemoteEventResult ProcessEvent(SPRemoteEventProperties properties)
         {
             SPRemoteEventResult result = new SPRemoteEventResult();
-            if (properties.ItemEventProperties.AfterProperties["TestChoice"].ToString() == "C1")
-            {
-                result.ChangedItemProperties.Add("Test1", "Changed because TestChoice was c1");
-            }
-            else if (properties.ItemEventProperties.AfterProperties["TestChoice"].ToString() == "C2")
-            {
-                result.ErrorMessage = "No can do because TestChoice was C2";
-                result.Status = SPRemoteEventServiceStatus.CancelWithError;
-            }
+
+            // if this is a document library and this item is being updated, have a look at the value of the field before it was changed.
+            // the BeforeProperties collection is not available for lists, it will be null
+            string myFieldBefore = properties.ItemEventProperties.BeforeProperties["myField"].ToString();
+            // Have a look at the changed fields.  Of Course you'll have to change "myField" to the name of a field in your list or document library
+            string myFieldAfter = properties.ItemEventProperties.AfterProperties["myField"].ToString();
+            // Maybe you'd like to change the value of a field in your list item
+            result.ChangedItemProperties.Add("fieldIWantToChange", "My New value");
+
+            //  maybe you don't like what's been done and want to tell SharePoint to cancel the save
+            // comment in the lines below to see the save cancel
+            //result.ErrorMessage = "No can do!";
+            //result.Status = SPRemoteEventServiceStatus.CancelWithError;
+            
+            //YOU GET THE PICTURE
+
             return result;
         }
 
@@ -30,5 +37,7 @@ namespace RERWithoutApp
             //this event will not fire but must be here to satisfy IRemoteEventService
         }
         #endregion
+
+
     }
 }
